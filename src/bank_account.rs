@@ -31,7 +31,7 @@ mod tests {
     fn deposit_100_dollars() {
         let mut transactions = MockTransactions::new();
 
-        &transactions.expect_deposit().times(1).return_const(());
+        transactions.expect_deposit().times(1).return_const(());
 
         let account = BankAccount {
             transactions: Box::new(&transactions),
