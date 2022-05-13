@@ -7,9 +7,9 @@ Write a class named Account that implements the following public interface:
 ```rust
 trait AccountService
 {
-    fn deposit(amount: u32);
-    fn withdraw(amount: u32);
-    fn printStatement();
+    fn deposit(&self, amount: i32);
+    fn withdraw(&self, amount: i32);
+    fn printStatement(&self);
 }
 ```
 
