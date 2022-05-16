@@ -19,13 +19,15 @@ impl AccountService for BankAccount<'_> {
         self.transactions.as_ref().withdraw(amount);
     }
     fn print_statement(&self) {
-        self.report.as_ref().print();
+        let transaction_list = self.transactions.list();
+        self.report.print(transaction_list);
     }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::report::MockReport;
+    use crate::transactions::Transaction;
     use crate::{transactions::MockTransactions, AccountService, BankAccount};
     use mockall::predicate::eq;
 
@@ -60,11 +62,21 @@ mod tests {
     }
 
     #[test]
-    fn print_statement() {
+    fn print_a_statement() {
         let mut report = MockReport::new();
-        let transactions = MockTransactions::new();
+        let mut transactions = MockTransactions::new();
+        let transaction_list: Vec<Transaction> = vec![Transaction { amount: 100 }];
 
-        report.expect_print().times(1).return_const("REPORT");
+        transactions
+            .expect_list()
+            .times(1)
+            .return_const(transaction_list.clone());
+
+        report
+            .expect_print()
+            .with(eq(transaction_list))
+            .times(1)
+            .return_const(());
 
         let account = BankAccount {
             transactions: Box::new(&transactions),
