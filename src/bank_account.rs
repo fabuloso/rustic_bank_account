@@ -6,12 +6,12 @@ pub trait AccountService {
     fn print_statement(&self);
 }
 
-pub struct BankAccount<'a> {
-    transactions: Box<&'a dyn Transactions>,
-    report: Box<&'a dyn Report>,
+pub struct BankAccount {
+    transactions: Box<dyn Transactions>,
+    report: Box<dyn Report>,
 }
 
-impl AccountService for BankAccount<'_> {
+impl AccountService for BankAccount {
     fn deposit(&self, amount: i32) {
         self.transactions.as_ref().deposit(amount);
     }
@@ -39,8 +39,8 @@ mod tests {
         transactions.expect_withdraw().times(1).return_const(());
 
         let account = BankAccount {
-            transactions: Box::new(&transactions),
-            report: Box::new(&report),
+            transactions: Box::new(transactions),
+            report: Box::new(report),
         };
 
         account.withdraw(100);
@@ -54,8 +54,8 @@ mod tests {
         transactions.expect_deposit().times(1).return_const(());
 
         let account = BankAccount {
-            transactions: Box::new(&transactions),
-            report: Box::new(&report),
+            transactions: Box::new(transactions),
+            report: Box::new(report),
         };
 
         account.deposit(100);
@@ -79,8 +79,8 @@ mod tests {
             .return_const(());
 
         let account = BankAccount {
-            transactions: Box::new(&transactions),
-            report: Box::new(&report),
+            transactions: Box::new(transactions),
+            report: Box::new(report),
         };
 
         account.print_statement();
