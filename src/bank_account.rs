@@ -3,7 +3,7 @@ use crate::{report::Report, transactions::Transactions};
 pub trait AccountService {
     fn deposit(&self, amount: i32);
     fn withdraw(&self, amount: i32);
-    fn print_statement(&self);
+    fn print_statement(&mut self);
 }
 
 pub struct BankAccount {
@@ -18,7 +18,7 @@ impl AccountService for BankAccount {
     fn withdraw(&self, amount: i32) {
         self.transactions.as_ref().withdraw(amount);
     }
-    fn print_statement(&self) {
+    fn print_statement(&mut self) {
         let transaction_list = self.transactions.list();
         self.report.print(transaction_list);
     }
@@ -78,7 +78,7 @@ mod tests {
             .times(1)
             .return_const(());
 
-        let account = BankAccount {
+        let mut account = BankAccount {
             transactions: Box::new(transactions),
             report: Box::new(report),
         };
